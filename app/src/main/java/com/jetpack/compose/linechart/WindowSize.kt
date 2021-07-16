@@ -4,6 +4,8 @@ const val WindowHeight = 120F
 
 const val WindowWidth = 500F
 
+const val TextFontSize = 30F
+
 /**
  * 绘制点的默认偏移量。
  */

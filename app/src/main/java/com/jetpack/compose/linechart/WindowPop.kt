@@ -2,14 +2,11 @@ package com.jetpack.compose.linechart
 
 import android.graphics.Typeface
 import android.view.MotionEvent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -30,7 +27,10 @@ import androidx.compose.ui.unit.toSize
 @ExperimentalComposeUiApi
 @Composable
 @Preview(widthDp = 500, heightDp = 500)
-fun WindowPop() {
+fun WindowPop(
+    xAxisString: String = "",
+    yAxisString: String = ""
+) {
     val drawType = remember {
         mutableStateOf(DrawType())
     }
@@ -65,30 +65,23 @@ fun WindowPop() {
                             DrawOnRight -> it.x
                         }
                     }
-                    else -> false
                 }
                 true
             }
         ) {
-/*            drawRoundRect(
-                color = Color.White,
-                topLeft = Offset(topLeftPosition.value.second, ),
-                cornerRadius = CornerRadius(x = 10F, y = 10F),
-                size = Size(WindowWidth, WindowHeight)
-            )*/
-            DrawPopWindowAndContent(
+            drawPopWindowAndContent(
                 this,
                 topLeftPosition.value.second,
                 topLeftPosition.value.first,
-                "x轴的相关的数据：",
-                "y轴的相关的数据："
+                xAxisString,
+                yAxisString
             )
         }
 
     }
 }
 
-fun DrawPopWindowAndContent(
+private fun drawPopWindowAndContent(
     scope: DrawScope,
     xPosition: Float,
     yPosition: Float,
@@ -97,7 +90,7 @@ fun DrawPopWindowAndContent(
 ) {
     val yAxisPaint = Paint().asFrameworkPaint().apply {
         isAntiAlias = true
-        textSize = 30F
+        textSize = TextFontSize
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
         textAlign = android.graphics.Paint.Align.LEFT
     }
