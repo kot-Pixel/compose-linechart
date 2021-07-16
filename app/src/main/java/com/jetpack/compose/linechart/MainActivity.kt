@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jetpack.compose.linechart.charts.ChartWithAxis
 
 class MainActivity : ComponentActivity() {
     @ExperimentalAnimationApi
@@ -40,10 +41,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            WindowPop(
+           /* WindowPop(
                 "xxxxx",
                 "yyyyyy"
-            )
+            )*/
+            ChartWithAxis()
         }
     }
 }

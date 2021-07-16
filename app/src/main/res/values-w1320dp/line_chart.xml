@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="line_chart_part_width">1201dp</dimen>
+    <dimen name="line_chart_part_height">242.5dp</dimen>
+
+    <dimen name="line_chart_x_offset">89.5dp</dimen>
+    <dimen name="line_chart_y_offset">7.5dp</dimen>
+
+    <dimen name="line_chart_width">1050.5dp</dimen>
+    <dimen name="line_chart_height">208.5dp</dimen>
+
+    <dimen name="line_chart_x_margin">71dp</dimen>
+    <dimen name="line_chart_y_margin">18dp</dimen>
+
+    <dimen name="line_chart_x_text_size">13.5sp</dimen>
+    <dimen name="line_chart_dot_line_margin">5.5dp</dimen>
+
+    <dimen name="line_chart_data_point_radius">4dp</dimen>
+    <dimen name="line_chart_data_point_width">2dp</dimen>
+
+    <dimen name="line_chart_y_axis_margin">8.5dp</dimen>
+    <dimen name="line_chart_x_axis_height">28.5dp</dimen>
+
+    <dimen name="line_chart_x_axis_offset">74.5dp</dimen>
+    <dimen name="line_chart_y_axis_offset">7.5dp</dimen>
+</resources>
