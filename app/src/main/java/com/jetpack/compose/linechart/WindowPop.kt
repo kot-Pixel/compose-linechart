@@ -1,5 +1,6 @@
 package com.jetpack.compose.linechart
 
+import android.graphics.Typeface
 import android.view.MotionEvent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
@@ -16,6 +17,10 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -65,13 +70,60 @@ fun WindowPop() {
                 true
             }
         ) {
-            drawRoundRect(
+/*            drawRoundRect(
                 color = Color.White,
-                topLeft = Offset(topLeftPosition.value.second, topLeftPosition.value.first),
-                cornerRadius = CornerRadius(x = 20F, y = 20F),
-                size = Size(500F, 120F)
+                topLeft = Offset(topLeftPosition.value.second, ),
+                cornerRadius = CornerRadius(x = 10F, y = 10F),
+                size = Size(WindowWidth, WindowHeight)
+            )*/
+            DrawPopWindowAndContent(
+                this,
+                topLeftPosition.value.second,
+                topLeftPosition.value.first,
+                "x轴的相关的数据：",
+                "y轴的相关的数据："
             )
         }
 
+    }
+}
+
+fun DrawPopWindowAndContent(
+    scope: DrawScope,
+    xPosition: Float,
+    yPosition: Float,
+    xContent: String,
+    yContent: String
+) {
+    val yAxisPaint = Paint().asFrameworkPaint().apply {
+        isAntiAlias = true
+        textSize = 30F
+        typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+        textAlign = android.graphics.Paint.Align.LEFT
+    }
+
+    scope.drawRoundRect(
+        color = Color.White,
+        topLeft = Offset(xPosition, yPosition),
+        cornerRadius = CornerRadius(x = 10F, y = 10F),
+        size = Size(WindowWidth, WindowHeight)
+    )
+
+    scope.drawIntoCanvas {
+        it.nativeCanvas.drawText(
+            xContent,
+            xPosition + 10,
+            yPosition + 45,
+            yAxisPaint
+        )
+    }
+
+    scope.drawIntoCanvas {
+        it.nativeCanvas.drawText(
+            yContent,
+            xPosition + 10,
+            yPosition + 105,
+            yAxisPaint
+        )
     }
 }
