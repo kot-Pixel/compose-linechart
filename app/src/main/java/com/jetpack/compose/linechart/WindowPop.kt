@@ -55,7 +55,7 @@ fun WindowPop(
                 when (it.action) {
                     MotionEvent.ACTION_DOWN -> {
                         drawType.value = confirmDrawTypeByPosition(
-                            it.x, it.y, availableWidth = size.value.height
+                            it.x, it.y, availableWidth = size.value.width
                         )
                         topLeftPosition.value = when (drawType.value.vertical) {
                             DrawOnTop -> it.y - WindowHeight
