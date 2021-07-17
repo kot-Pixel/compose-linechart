@@ -2,6 +2,7 @@ package com.jetpack.compose.linechart.charts
 
 import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,19 +16,16 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
-import com.jetpack.compose.linechart.ChartHeight
-import com.jetpack.compose.linechart.ChartWidth
+
 
 @Composable
 fun LineChart(
-    modifier: Modifier = Modifier
-        .fillMaxSize()
-        .offset(80.dp, 50.dp),
+    modifier: Modifier,
     xSegment: Int = 10,
-    xSegmentList: List<String> = listOf(),
     ySegment: Int = 6,
-    ySegmentList: List<String> = listOf(),
-    fontSize: Float = 30F
+    fontSize: Float = 30F,
+    chartWidth: Float,
+    chartHeight: Float
 ) {
     val yAxisPaint = Paint().asFrameworkPaint().apply {
         isAntiAlias = true
@@ -46,22 +44,22 @@ fun LineChart(
     Canvas(modifier = modifier) {
         lineChartDrawBorder(
             scope = this,
-            width = ChartWidth,
-            height = ChartHeight,
+            width = chartWidth,
+            height = chartHeight,
             color = Color.Black
         )
         lineChartYAxisSolid(
             scope = this,
             ySegment = ySegment,
-            width = ChartWidth,
-            height = ChartHeight,
+            width = chartWidth,
+            height = chartHeight,
             color = Color.Black
         )
         drawXAxisScale(
             scope = this,
             xSegment = xSegment,
-            width = ChartWidth,
-            height = ChartHeight,
+            width = chartWidth,
+            height = chartHeight,
             color = Color.Black
         )
 
@@ -70,8 +68,8 @@ fun LineChart(
             fontSize = fontSize,
             xSegment = xSegment,
             ySegment = ySegment,
-            width = ChartWidth,
-            height = ChartHeight,
+            width = chartWidth,
+            height = chartHeight,
             xTextPainter = xAxisPaint,
             yTextPainter = yAxisPaint
         )

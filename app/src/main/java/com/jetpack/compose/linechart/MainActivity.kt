@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.TweenSpec
@@ -14,6 +15,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -32,13 +36,19 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.jetpack.compose.linechart.charts.ChartWithAxis
 import com.jetpack.compose.linechart.charts.LineChart
+import com.jetpack.compose.linechart.charts.MainViewModel
 import com.qmuiteam.qmui.util.QMUIDeviceHelper
 import com.qmuiteam.qmui.util.QMUIDisplayHelper
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel by viewModels<MainViewModel>()
+
     @ExperimentalAnimationApi
     @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +65,32 @@ class MainActivity : ComponentActivity() {
                  "yyyyyy"
              )*/
 //            ChartWithAxis()
-            LineChart()
+            Column(modifier = Modifier.fillMaxSize()) {
+                val chartWidth = viewModel.chartWidth.collectAsState()
+                val chartHeight = viewModel.chartHeight.collectAsState()
+                LineChart(
+                    chartHeight = chartHeight.value,
+                    chartWidth = chartWidth.value,
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .offset(80.dp, 50.dp)
+                )
+
+                var offsetX by remember { mutableStateOf(800f) }
+
+                Text(
+                    modifier = Modifier
+                        .offset { IntOffset(x = offsetX.roundToInt(), 1000) }
+                        .draggable(
+                            orientation = Orientation.Horizontal,
+                            state = rememberDraggableState { delta ->
+                                offsetX += delta
+                                viewModel.updateNewWidth(delta)
+                            }
+                        ),
+                    text = "Drag me!"
+                )
+            }
         }
     }
 }
