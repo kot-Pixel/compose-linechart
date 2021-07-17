@@ -7,8 +7,4 @@ sealed class CanvasEvent
 
 object AbleWindowEvent : CanvasEvent()
 
-object DisableWindowEvent : CanvasEvent()
-
 object TimeAddEvent : CanvasEvent()
-
-object ResetTimerEvent: CanvasEvent()

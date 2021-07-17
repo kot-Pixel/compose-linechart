@@ -22,8 +22,6 @@ class CanvasManager(
 
     private var timeJob: Job? = null
 
-    private val _mTimeCountFlow: MutableSharedFlow<CanvasEvent> = MutableSharedFlow()
-
     private var count = 0
 
     /**
@@ -31,8 +29,10 @@ class CanvasManager(
      */
     private fun startTimer() {
         timeJob = scope.launch {
-            delay(1000)
-            _mTimeCountFlow.emit(TimeAddEvent)
+            while (true) {
+                delay(1000)
+                eventFlow.emit(TimeAddEvent)
+            }
         }
     }
 
@@ -49,23 +49,20 @@ class CanvasManager(
     fun start() {
         scope.launch {
             eventFlow.collect {
+                println("canvas Event $it")
                 when (it) {
                     TimeAddEvent -> {
                         count++
                         if (count >= 5) {
+                            windowStateFlow.emit(WindowState.NotDisplay)
                             stopTimer()
-                            eventFlow.emit(DisableWindowEvent)
                         }
                     }
                     AbleWindowEvent -> {
+                        stopTimer()
+                        count = 0
                         startTimer()
                         windowStateFlow.emit(WindowState.Display)
-                    }
-                    DisableWindowEvent -> {
-                        windowStateFlow.emit(WindowState.NotDisplay)
-                    }
-                    ResetTimerEvent -> {
-                        count = 0
                     }
                 }
             }

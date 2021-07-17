@@ -122,13 +122,13 @@ fun LineChart(
             yTextPainter = yAxisPaint
         )
 
-        drawPopWindowAndContent(
+/*        drawPopWindowAndContent(
             this,
             topLeftPosition.value.second,
             topLeftPosition.value.first,
             "x",
             "y"
-        )
+        )*/
     }
 }
 

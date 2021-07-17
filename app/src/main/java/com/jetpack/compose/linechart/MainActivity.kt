@@ -59,12 +59,12 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            /* WindowPop(
-                 "xxxxx",
-                 "yyyyyy"
-             )*/
+            WindowPop(
+                "xxxxx",
+                "yyyyyy"
+            )
 //            ChartWithAxis()
-            Column(modifier = Modifier.fillMaxSize()) {
+/*            Column(modifier = Modifier.fillMaxSize()) {
                 val chartWidth = viewModel.chartWidth.collectAsState()
                 val chartHeight = viewModel.chartHeight.collectAsState()
                 LineChart(
@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
                         ),
                     text = "Drag me!"
                 )
-            }
+            }*/
         }
     }
 }
