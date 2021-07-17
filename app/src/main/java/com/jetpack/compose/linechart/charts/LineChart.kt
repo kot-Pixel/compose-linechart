@@ -1,10 +1,12 @@
 package com.jetpack.compose.linechart.charts
 
 import android.graphics.Typeface
+import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -15,17 +17,24 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.dp
 
 
+@ExperimentalComposeUiApi
 @Composable
 fun LineChart(
-    modifier: Modifier,
     xSegment: Int = 10,
     ySegment: Int = 6,
     fontSize: Float = 30F,
     chartWidth: Float,
-    chartHeight: Float
+    chartHeight: Float,
+    data: List<List<Float>> = listOf(
+        listOf(80F, 90F, 100F, 120F, 85F, 90F, 98F, 120F, 100F, 130F, 135F, 95F),
+        listOf(125F, 100F, 110F, 90F, 85F, 120F, 87F, 110F, 98F, 109F, 88F, 110F),
+        listOf(80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F),
+        listOf(98F, 110F, 108F, 99F, 109F, 110F, 132F, 95F, 120F, 86F, 98F, 120F)
+    ),
 ) {
     val yAxisPaint = Paint().asFrameworkPaint().apply {
         isAntiAlias = true
@@ -41,7 +50,17 @@ fun LineChart(
         textAlign = android.graphics.Paint.Align.RIGHT
     }
 
-    Canvas(modifier = modifier) {
+    Canvas(modifier = Modifier
+        .width(920.dp)
+        .height(280.dp)
+        .offset(80.dp, 50.dp)
+        .pointerInteropFilter {
+            when (it.action) {
+                MotionEvent.ACTION_DOWN -> {
+                }
+            }
+            true
+        }) {
         lineChartDrawBorder(
             scope = this,
             width = chartWidth,
@@ -149,9 +168,9 @@ fun drawAxisText(
     for (i in 0..xSegment) {
         scope.drawIntoCanvas {
             it.nativeCanvas.drawText(
-                "x${i}",
+                "01/0${i + 1}  10:50",
                 (width / xSegment) * i,
-                height + fontSize + 10,
+                height + fontSize + 20,
                 yTextPainter
             )
         }
@@ -160,7 +179,7 @@ fun drawAxisText(
     for (i in 0..ySegment) {
         scope.drawIntoCanvas {
             it.nativeCanvas.drawText(
-                "y${i}",
+                "${(6 - i) * 30} mmHg",
                 -50F,
                 (height / ySegment) * i - (xTextPainter.fontMetrics.top / 2) - (xTextPainter.fontMetrics.bottom / 2),
                 xTextPainter
