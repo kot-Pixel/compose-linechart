@@ -6,6 +6,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -18,7 +20,10 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
+import com.jetpack.compose.linechart.*
 
 
 @ExperimentalComposeUiApi
@@ -36,6 +41,17 @@ fun LineChart(
         listOf(98F, 110F, 108F, 99F, 109F, 110F, 132F, 95F, 120F, 86F, 98F, 120F)
     ),
 ) {
+
+    val drawType = remember {
+        mutableStateOf(DrawType())
+    }
+    val size = remember {
+        mutableStateOf(Size.Zero)
+    }
+    val topLeftPosition = remember {
+        mutableStateOf(0.0F to 0.0F)
+    }
+
     val yAxisPaint = Paint().asFrameworkPaint().apply {
         isAntiAlias = true
         textSize = fontSize
@@ -54,9 +70,22 @@ fun LineChart(
         .width(920.dp)
         .height(280.dp)
         .offset(80.dp, 50.dp)
+        .onGloballyPositioned { layoutCoordinates ->
+            size.value = layoutCoordinates.size.toSize()
+        }
         .pointerInteropFilter {
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    drawType.value = confirmDrawTypeByPosition(
+                        it.x, it.y, availableWidth = size.value.width
+                    )
+                    topLeftPosition.value = when (drawType.value.vertical) {
+                        DrawOnTop -> it.y - WindowHeight
+                        DrawOnBottom -> it.y
+                    } to when (drawType.value.horizontal) {
+                        DrawOnLeft -> it.x - WindowWidth
+                        DrawOnRight -> it.x
+                    }
                 }
             }
             true
@@ -91,6 +120,14 @@ fun LineChart(
             height = chartHeight,
             xTextPainter = xAxisPaint,
             yTextPainter = yAxisPaint
+        )
+
+        drawPopWindowAndContent(
+            this,
+            topLeftPosition.value.second,
+            topLeftPosition.value.first,
+            "x",
+            "y"
         )
     }
 }

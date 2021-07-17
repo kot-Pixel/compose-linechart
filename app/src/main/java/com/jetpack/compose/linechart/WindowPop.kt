@@ -81,7 +81,7 @@ fun WindowPop(
     }
 }
 
-private fun drawPopWindowAndContent(
+fun drawPopWindowAndContent(
     scope: DrawScope,
     xPosition: Float,
     yPosition: Float,
