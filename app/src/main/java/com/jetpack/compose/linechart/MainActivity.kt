@@ -1,11 +1,13 @@
 package com.jetpack.compose.linechart
 
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.TweenSpec
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @ExperimentalAnimationApi
     @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,12 +62,12 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            WindowPop(
+/*            WindowPop(
                 "xxxxx",
                 "yyyyyy"
-            )
+            )*/
 //            ChartWithAxis()
-/*            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 val chartWidth = viewModel.chartWidth.collectAsState()
                 val chartHeight = viewModel.chartHeight.collectAsState()
                 LineChart(
@@ -86,7 +89,7 @@ class MainActivity : ComponentActivity() {
                         ),
                     text = "Drag me!"
                 )
-            }*/
+            }
         }
     }
 }

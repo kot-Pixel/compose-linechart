@@ -1,13 +1,15 @@
 package com.jetpack.compose.linechart.charts
 
 import android.graphics.Typeface
+import android.os.Build
 import android.view.MotionEvent
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.toSize
 import com.jetpack.compose.linechart.*
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalComposeUiApi
 @Composable
 fun LineChart(
@@ -66,6 +69,17 @@ fun LineChart(
         textAlign = android.graphics.Paint.Align.RIGHT
     }
 
+    val manager = CanvasManager(rememberCoroutineScope())
+    manager.start()
+    val state = manager.windowStateFlow.collectAsState(initial = WindowState.NotDisplay)
+
+    val animationTargetState = remember { mutableStateOf(0f) }
+
+    val animatedFloatState = animateFloatAsState(
+        targetValue = animationTargetState.value,
+        animationSpec = tween(durationMillis = 3000)
+    )
+
     Canvas(modifier = Modifier
         .width(920.dp)
         .height(280.dp)
@@ -76,6 +90,8 @@ fun LineChart(
         .pointerInteropFilter {
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    manager.enableDisplay()
+                    animationTargetState.value = 0.3F
                     drawType.value = confirmDrawTypeByPosition(
                         it.x, it.y, availableWidth = size.value.width
                     )
@@ -121,14 +137,16 @@ fun LineChart(
             xTextPainter = xAxisPaint,
             yTextPainter = yAxisPaint
         )
-
-/*        drawPopWindowAndContent(
-            this,
-            topLeftPosition.value.second,
-            topLeftPosition.value.first,
-            "x",
-            "y"
-        )*/
+        if (state.value == WindowState.Display) {
+            drawPopWindowAndContent(
+                this,
+                topLeftPosition.value.second,
+                topLeftPosition.value.first,
+                "x",
+                "y",
+                animatedFloatState.value
+            )
+        }
     }
 }
 
