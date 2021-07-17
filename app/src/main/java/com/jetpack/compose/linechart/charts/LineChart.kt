@@ -47,6 +47,7 @@ fun LineChart(
     ),
 ) {
     val targetList = mutableListOf<MutableList<Pair<Float, Float>>>()
+    val rangeList = mutableListOf<MutableList<Pair<pointRrange, String>>>()
     data.forEach { list ->
         targetList.add(mutableListOf<Pair<Float, Float>>().also {
             list.forEachIndexed { index, value ->
@@ -55,6 +56,20 @@ fun LineChart(
                         value,
                         (chartHeight / ySegment)
                     )
+                )
+            }
+        })
+        rangeList.add(mutableListOf<Pair<pointRrange, String>>().also {
+            list.forEachIndexed { index, value ->
+                val x = chartWidth / xSegment * index
+                val y = calculateYPosition2(
+                    value,
+                    (chartHeight / ySegment)
+                )
+                it.add(
+                    pointRrange(
+                        x, y
+                    ) to "${index}-${list[index]}"
                 )
             }
         })
@@ -68,6 +83,10 @@ fun LineChart(
         mutableStateOf(Size.Zero)
     }
     val topLeftPosition = remember {
+        mutableStateOf(0.0F to 0.0F)
+    }
+
+    val point = remember {
         mutableStateOf(0.0F to 0.0F)
     }
 
@@ -106,17 +125,26 @@ fun LineChart(
         .pointerInteropFilter {
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    manager.enableDisplay()
-                    animationTargetState.value = 0.3F
-                    drawType.value = confirmDrawTypeByPosition(
-                        it.x, it.y, availableWidth = size.value.width
-                    )
-                    topLeftPosition.value = when (drawType.value.vertical) {
-                        DrawOnTop -> it.y - WindowHeight
-                        DrawOnBottom -> it.y
-                    } to when (drawType.value.horizontal) {
-                        DrawOnLeft -> it.x - WindowWidth
-                        DrawOnRight -> it.x
+                    rangeList.forEach { list ->
+                        list.forEach { pair ->
+                            val x = pair.first.x
+                            val y = pair.first.y
+                            if ((it.x in x - 20..x + 20) && (it.y in y - 20..y + 20)) {
+                                manager.enableDisplay()
+                                animationTargetState.value = 0.3F
+                                point.value = x to y
+                                drawType.value = confirmDrawTypeByPosition(
+                                    x, y, availableWidth = size.value.width
+                                )
+                                topLeftPosition.value = when (drawType.value.vertical) {
+                                    DrawOnTop -> y - WindowHeight
+                                    DrawOnBottom -> y - 20F
+                                } to when (drawType.value.horizontal) {
+                                    DrawOnLeft -> x - WindowWidth
+                                    DrawOnRight -> x
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -155,7 +183,7 @@ fun LineChart(
         )
 
         targetList.forEachIndexed { inx, mutableList ->
-            val color =  when (inx) {
+            val color = when (inx) {
                 0 -> Color.Red
                 1 -> Color.Black
                 2 -> Color.Yellow
@@ -185,14 +213,20 @@ fun LineChart(
         }
 
         if (state.value == WindowState.Display) {
-            drawPopWindowAndContent(
-                this,
-                topLeftPosition.value.second,
-                topLeftPosition.value.first,
-                "x",
-                "y",
-                animatedFloatState.value
-            )
+            rangeList.forEach {
+                it.forEach { pair ->
+                    if (pair.first.x == point.value.first && pair.first.y == point.value.second) {
+                        drawPopWindowAndContent(
+                            this,
+                            topLeftPosition.value.second,
+                            topLeftPosition.value.first,
+                            "当前时间为：01/0${(pair.second.split("-").first()).toInt() + 1} 10:50",
+                            "当前血压值为：${pair.second.split("-").last()}",
+                            animatedFloatState.value
+                        )
+                    }
+                }
+            }
         }
     }
 }
