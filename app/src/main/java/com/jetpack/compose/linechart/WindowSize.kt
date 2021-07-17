@@ -6,6 +6,10 @@ const val WindowWidth = 500F
 
 const val TextFontSize = 30F
 
+const val ChartWidth = 2300F
+
+const val ChartHeight = 700F
+
 /**
  * 绘制点的默认偏移量。
  */

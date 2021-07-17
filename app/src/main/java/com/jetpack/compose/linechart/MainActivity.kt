@@ -34,18 +34,28 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jetpack.compose.linechart.charts.ChartWithAxis
+import com.jetpack.compose.linechart.charts.LineChart
+import com.qmuiteam.qmui.util.QMUIDeviceHelper
+import com.qmuiteam.qmui.util.QMUIDisplayHelper
 
 class MainActivity : ComponentActivity() {
     @ExperimentalAnimationApi
     @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val isTablet = QMUIDeviceHelper.isTablet(applicationContext)
+        if (isTablet) {
+            QMUIDisplayHelper.setFullScreen(this)
+        }
+
         setContent {
-           /* WindowPop(
-                "xxxxx",
-                "yyyyyy"
-            )*/
-            ChartWithAxis()
+            /* WindowPop(
+                 "xxxxx",
+                 "yyyyyy"
+             )*/
+//            ChartWithAxis()
+            LineChart()
         }
     }
 }
