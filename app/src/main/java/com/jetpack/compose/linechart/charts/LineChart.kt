@@ -26,8 +26,10 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.jetpack.compose.linechart.*
+import kotlin.math.roundToInt
 
 
+@ExperimentalUnsignedTypes
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalComposeUiApi
 @Composable
@@ -38,12 +40,26 @@ fun LineChart(
     chartWidth: Float,
     chartHeight: Float,
     data: List<List<Float>> = listOf(
-        listOf(80F, 90F, 100F, 120F, 85F, 90F, 98F, 120F, 100F, 130F, 135F, 95F),
-        listOf(125F, 100F, 110F, 90F, 85F, 120F, 87F, 110F, 98F, 109F, 88F, 110F),
-        listOf(80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F),
-        listOf(98F, 110F, 108F, 99F, 109F, 110F, 132F, 95F, 120F, 86F, 98F, 120F)
+        listOf(80F, 90F, 100F, 120F, 85F, 90F, 98F, 120F, 100F, 130F, 135F),
+        listOf(125F, 100F, 110F, 90F, 85F, 120F, 87F, 110F, 98F, 109F, 88F),
+        listOf(80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F, 80F),
+        listOf(98F, 110F, 108F, 99F, 109F, 110F, 132F, 95F, 120F, 86F, 98F)
     ),
 ) {
+    val targetList = mutableListOf<MutableList<Pair<Float, Float>>>()
+    data.forEach { list ->
+        targetList.add(mutableListOf<Pair<Float, Float>>().also {
+            list.forEachIndexed { index, value ->
+                it.add(
+                    chartWidth / xSegment * index to calculateYPosition2(
+                        value,
+                        (chartHeight / ySegment)
+                    )
+                )
+            }
+        })
+    }
+
 
     val drawType = remember {
         mutableStateOf(DrawType())
@@ -137,6 +153,37 @@ fun LineChart(
             xTextPainter = xAxisPaint,
             yTextPainter = yAxisPaint
         )
+
+        targetList.forEachIndexed { inx, mutableList ->
+            val color =  when (inx) {
+                0 -> Color.Red
+                1 -> Color.Black
+                2 -> Color.Yellow
+                3 -> Color.Blue
+                else -> Color.Red
+            }
+            mutableList.forEachIndexed { index, pair ->
+                if (index != mutableList.lastIndex) {
+                    val nextElement = mutableList.elementAt(index + 1)
+                    drawLine(
+                        color = color,
+                        start = Offset(pair.first, pair.second),
+                        end = Offset(nextElement.first, nextElement.second),
+                        strokeWidth = 2.0F
+                    )
+                }
+                drawCircle(
+                    color = color,
+                    radius = 10F,
+                    center = Offset(
+                        pair.first,
+                        pair.second
+                    ),
+                    style = Stroke(width = 2F)
+                )
+            }
+        }
+
         if (state.value == WindowState.Display) {
             drawPopWindowAndContent(
                 this,
@@ -242,3 +289,11 @@ fun drawAxisText(
         }
     }
 }
+
+fun calculateYPosition2(
+    targetFloat: Float,
+    interval: Float
+): Float {
+    return ((180 - targetFloat).roundToInt() / 30) * interval + ((180 - targetFloat) % 30) / 30F * interval
+}
+
