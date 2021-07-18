@@ -18,6 +18,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.gestures.DragScope
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -44,6 +45,7 @@ import com.jetpack.compose.linechart.charts.LineChart
 import com.jetpack.compose.linechart.charts.MainViewModel
 import com.qmuiteam.qmui.util.QMUIDeviceHelper
 import com.qmuiteam.qmui.util.QMUIDisplayHelper
+import jetpack.compose.gesture.*
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
@@ -67,7 +69,7 @@ class MainActivity : ComponentActivity() {
                 "yyyyyy"
             )*/
 //            ChartWithAxis()
-            Column(modifier = Modifier.fillMaxSize()) {
+/*            Column(modifier = Modifier.fillMaxSize()) {
                 val chartWidth = viewModel.chartWidth.collectAsState()
                 val chartHeight = viewModel.chartHeight.collectAsState()
                 LineChart(
@@ -89,6 +91,14 @@ class MainActivity : ComponentActivity() {
                         ),
                     text = "Drag me!"
                 )
+            }*/
+            Column(modifier = Modifier.fillMaxSize()) {
+/*                ScrollableBox()
+                Scrollable()
+                Scroll()*/
+                DragModifier()
+                DragScope2()
+                TransformableState()
             }
         }
     }
